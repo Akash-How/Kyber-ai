@@ -1,6 +1,6 @@
-# JediHire - Generative UI Job Assistant
+# Kyber - Generative UI Job Assistant
 
-JediHire is a chat-first job assistant built with Next.js + Tambo React SDK for hackathon demos.
+Kyber is a chat-first job assistant built with Next.js + Tambo React SDK for hackathon demos.
 
 ## What it demonstrates
 
