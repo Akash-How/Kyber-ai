@@ -1,0 +1,211 @@
+﻿import {
+  ATSScoreBar,
+  atsScoreBarSchema,
+  ATSWarnings,
+  atsWarningsSchema,
+  ActionVerbBooster,
+  actionVerbBoosterSchema,
+  ExportOptions,
+  exportOptionsSchema,
+  FinalChecklist,
+  finalChecklistSchema,
+  FormattingPreview,
+  formattingPreviewSchema,
+  ImpactBulletGenerator,
+  impactBulletGeneratorSchema,
+  JDMatchInsights,
+  jdMatchInsightsSchema,
+  JobKeywordExtractor,
+  jobKeywordExtractorSchema,
+  MeasurableImpactSuggestions,
+  measurableImpactSuggestionsSchema,
+  MetricsSuggestionPanel,
+  metricsSuggestionPanelSchema,
+  MissingKeywords,
+  missingKeywordsSchema,
+  MissingKeywordsList,
+  missingKeywordsListSchema,
+  OpeningParagraphRefiner,
+  openingParagraphRefinerSchema,
+  RewriteOptions,
+  rewriteOptionsSchema,
+  RewriteSuggestions,
+  rewriteSuggestionsSchema,
+  SkillGapList,
+  skillGapListSchema,
+  StylePresetPicker,
+  stylePresetPickerSchema,
+  ToneSlider,
+  toneSliderSchema,
+} from "@/components/job/action-panel-components";
+import { calculateATSScore } from "@/services/ats-score";
+import { generateCoverLetter } from "@/services/cover-letter";
+import { parseResumeText } from "@/services/resume-parser";
+import type { TamboComponent, TamboTool } from "@tambo-ai/react";
+import { z } from "zod";
+
+export const tools: TamboTool[] = [
+  {
+    name: "parseResumeText",
+    description:
+      "Parse raw resume text into structured fields: name, email, headline, summary, skills, experience, education.",
+    tool: parseResumeText,
+    inputSchema: z.object({ rawText: z.string() }),
+    outputSchema: z.object({
+      name: z.string(),
+      email: z.string(),
+      headline: z.string(),
+      summary: z.string(),
+      skills: z.array(z.string()),
+      experience: z.array(z.string()),
+      education: z.array(z.string()),
+    }),
+  },
+  {
+    name: "calculateATSScore",
+    description:
+      "Calculate ATS score against a target role and return matched/missing keywords and recommendations.",
+    tool: calculateATSScore,
+    inputSchema: z.object({ resumeText: z.string(), jobDescriptionText: z.string() }),
+    outputSchema: z.object({
+      score: z.number(),
+      matchedKeywords: z.array(z.string()),
+      missingKeywords: z.array(z.string()),
+      recommendations: z.array(z.string()),
+    }),
+  },
+  {
+    name: "generateCoverLetter",
+    description: "Generate a short tailored cover-letter draft from resume summary and job context.",
+    tool: generateCoverLetter,
+    inputSchema: z.object({
+      resumeSummary: z.object({
+        name: z.string(),
+        headline: z.string(),
+        summary: z.string(),
+        skills: z.array(z.string()),
+      }),
+      jobDescription: z.string(),
+      company: z.string(),
+      role: z.string(),
+    }),
+    outputSchema: z.object({ coverLetterText: z.string() }),
+  },
+];
+
+export const components: TamboComponent[] = [
+  {
+    name: "ATSScoreBar",
+    description: "Compact ATS score bar with one-line reasoning.",
+    component: ATSScoreBar,
+    propsSchema: atsScoreBarSchema,
+  },
+  {
+    name: "JDMatchInsights",
+    description: "Shows matched keywords, missing count, and role-fit summary for JD alignment.",
+    component: JDMatchInsights,
+    propsSchema: jdMatchInsightsSchema,
+  },
+  {
+    name: "MissingKeywords",
+    description: "Clickable missing-keyword chips for placement guidance.",
+    component: MissingKeywords,
+    propsSchema: missingKeywordsSchema,
+  },
+  {
+    name: "ToneSlider",
+    description: "Slider for formal to friendly to confident tone.",
+    component: ToneSlider,
+    propsSchema: toneSliderSchema,
+  },
+  {
+    name: "RewriteOptions",
+    description: "Three compact rewrite actions: Shorten, Make Stronger, Tailor to JD.",
+    component: RewriteOptions,
+    propsSchema: rewriteOptionsSchema,
+  },
+  {
+    name: "MeasurableImpactSuggestions",
+    description: "Suggestions to add numbers, scale, and business impact.",
+    component: MeasurableImpactSuggestions,
+    propsSchema: measurableImpactSuggestionsSchema,
+  },
+  {
+    name: "JobKeywordExtractor",
+    description: "Use when user tailors resume for company/role or asks ATS optimization.",
+    component: JobKeywordExtractor,
+    propsSchema: jobKeywordExtractorSchema,
+  },
+  {
+    name: "SkillGapList",
+    description: "Use to show missing skills ranked by importance.",
+    component: SkillGapList,
+    propsSchema: skillGapListSchema,
+  },
+  {
+    name: "RewriteSuggestions",
+    description: "Use to propose concise rewritten lines with accept controls.",
+    component: RewriteSuggestions,
+    propsSchema: rewriteSuggestionsSchema,
+  },
+  {
+    name: "StylePresetPicker",
+    description: "Lets user pick writing style presets.",
+    component: StylePresetPicker,
+    propsSchema: stylePresetPickerSchema,
+  },
+  {
+    name: "OpeningParagraphRefiner",
+    description: "Improves intro/opening paragraph tone and clarity.",
+    component: OpeningParagraphRefiner,
+    propsSchema: openingParagraphRefinerSchema,
+  },
+  {
+    name: "MissingKeywordsList",
+    description: "Shows missing keywords list in ATS workflows.",
+    component: MissingKeywordsList,
+    propsSchema: missingKeywordsListSchema,
+  },
+  {
+    name: "ATSWarnings",
+    description: "Shows formatting/content warnings for ATS workflows.",
+    component: ATSWarnings,
+    propsSchema: atsWarningsSchema,
+  },
+  {
+    name: "ImpactBulletGenerator",
+    description: "Generates achievement bullets with metrics.",
+    component: ImpactBulletGenerator,
+    propsSchema: impactBulletGeneratorSchema,
+  },
+  {
+    name: "MetricsSuggestionPanel",
+    description: "Provides measurable metric ideas.",
+    component: MetricsSuggestionPanel,
+    propsSchema: metricsSuggestionPanelSchema,
+  },
+  {
+    name: "ActionVerbBooster",
+    description: "Improves achievement lines with stronger action verbs.",
+    component: ActionVerbBooster,
+    propsSchema: actionVerbBoosterSchema,
+  },
+  {
+    name: "ExportOptions",
+    description: "Compact PDF/DOCX/Copy export actions.",
+    component: ExportOptions,
+    propsSchema: exportOptionsSchema,
+  },
+  {
+    name: "FinalChecklist",
+    description: "Interactive checklist before submission/export.",
+    component: FinalChecklist,
+    propsSchema: finalChecklistSchema,
+  },
+  {
+    name: "FormattingPreview",
+    description: "Quick formatting health preview.",
+    component: FormattingPreview,
+    propsSchema: formattingPreviewSchema,
+  },
+];
