@@ -2,6 +2,11 @@
 
 Kyber is a chat-first job assistant built with Next.js + Tambo React SDK for hackathon demos.
 
+# Development Note
+
+This project was built with assistance from AI tools to speed up prototyping and iteration, 
+while all final implementation and integration decisions were made by me.
+
 ## What it demonstrates
 
 - Generative UI flow where AI selects UI components based on user messages
@@ -17,6 +22,8 @@ Kyber is a chat-first job assistant built with Next.js + Tambo React SDK for hac
   - calculateATSScore
   - generateCoverLetter
 - Premium dark glassmorphism interface with responsive layout
+
+## What it demonstrates
 
 ## Run locally
 
